@@ -1,16 +1,20 @@
-import express,{ json, urlencoded } from "express";
-import session from "express-session";
-import {config} from "dotenv";
-import passport from "passport";
-import { DBConnection } from "./src/config/index.js";
-import BP from "body-parser";
 import cors from "cors";
+import { join } from "path";
+import BP from "body-parser";
+import { dirname } from "path";
+import passport from "passport";
+import { config } from "dotenv";
+import { fileURLToPath } from "url";
+import session from "express-session";
+import { authRouter } from "./src/router/index.js";
+import express, { json, urlencoded } from "express";
+import { DBConnection } from "./src/middleware/index.js";
 
 config();
-DBConnection()
+DBConnection();
 
 const app = express();
-app.use(express.static('public'))
+app.use(express.static("public"));
 
 app.use(json());
 app.use(cors());
@@ -20,15 +24,24 @@ app.use(BP.json({ type: "application/*+json" }));
 
 const port = process.env.PORT || 3000;
 
-app.use(session({
-    secret: process.env.SECRET_KEY,
+app.use(
+  session({
     resave: false,
     saveUninitialized: true,
+    secret: process.env.SECRET_KEY,
+  }),
+  passport.session(),
+  passport.initialize()
+);
 
-}), passport.initialize(), passport.session());
+app.use("/auth", authRouter);
+// Serve the HTML file
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.get("/", (req, res) => {
-    res.send("Please signin or register");
+  const filePath = join(__dirname, "./src/frontend/index.html");
+  res.sendFile(filePath);
 });
 
 app.listen(port, () => {
