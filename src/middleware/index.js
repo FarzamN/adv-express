@@ -95,3 +95,11 @@ export const hashingPassword = async (password) => {
 export const comparePassword = (password, hashedPassword) => {
   return compareSync(password, hashedPassword);
 };
+
+export const genToken = (id) => {
+  const payload = { id };
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+  return token;
+};
