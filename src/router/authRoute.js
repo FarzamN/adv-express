@@ -5,7 +5,12 @@ import {
   validateLogin,
   validateRegister,
 } from "../middleware/index.js";
-import { login, register, google_login } from "../controller/authController.js";
+import {
+  login,
+  register,
+  google_login,
+  getAllUser,
+} from "../controller/authController.js";
 
 const authRouter = Router();
 
@@ -25,5 +30,6 @@ authRouter.post(
 );
 
 authRouter.post("/google-login", formData, google_login);
+authRouter.get("/get-all-user", getAllUser);
 
 export default authRouter;
