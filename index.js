@@ -13,11 +13,16 @@ import { DBConnection } from "./src/middleware/index.js";
 config();
 DBConnection();
 
+const coreConfig = {
+  origin: "*",
+  credentials: true,
+  method: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+};
 const app = express();
 app.use(express.static("public"));
 
 app.use(json());
-app.use(cors());
+app.use(cors(coreConfig));
 app.use(BP.json());
 app.use(urlencoded({ extended: false }));
 app.use(BP.json({ type: "application/*+json" }));

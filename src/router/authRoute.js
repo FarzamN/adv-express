@@ -5,7 +5,7 @@ import {
   validateLogin,
   validateRegister,
 } from "../middleware/index.js";
-import { login, register } from "../controller/authController.js";
+import { login, register, google_login } from "../controller/authController.js";
 
 const authRouter = Router();
 
@@ -23,5 +23,7 @@ authRouter.post(
   handleValidationErrors,
   register
 );
+
+authRouter.post("/google-login", formData, google_login);
 
 export default authRouter;

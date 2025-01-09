@@ -70,3 +70,15 @@ export const register = asyncHandler(async (req, res) => {
     });
   }
 });
+
+export const google_login = asyncHandler(async (req, res) => {
+  const { email, name, googleID } = req.body;
+  try {
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      error: error.message,
+      message: catchErr("google_login", "auth"),
+    });
+  }
+});
