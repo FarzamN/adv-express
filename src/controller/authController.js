@@ -1,4 +1,3 @@
-import jwt from "jsonwebtoken";
 import { User } from "../model/index.js";
 import asyncHandler from "express-async-handler";
 import {
@@ -7,6 +6,35 @@ import {
   comparePassword,
   hashingPassword,
 } from "../middleware/index.js";
+import { Strategy as google } from "passport-google-oauth2";
+import passport from "passport";
+import { dirname } from "path";
+
+const clientID =
+  "1032121719365-0iuvmoiivmr4sg6qbt560m1hqa62lfg7.apps.googleusercontent.com";
+const clientSecret = "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";
+const callbackURL = "https://www.youtube.com";
+passport.use(
+  new google(
+    { clientID, clientSecret, callbackURL, passReqToCallback: true },
+    function (request, accessToken, refreshToken, profile, done) {
+      User.findOrCreate({ googleId: profile.id }, (err, user) =>
+        done(err, user, profile)
+      );
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
+export const google_login = asyncHandler(async (req, res) => {
+  res.send("Logged in with Google!");
+});
 
 export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -67,18 +95,6 @@ export const register = asyncHandler(async (req, res) => {
       status: 500,
       error: error.message,
       message: catchErr("register", "auth"),
-    });
-  }
-});
-
-export const google_login = asyncHandler(async (req, res) => {
-  const { email, name, googleID } = req.body;
-  try {
-  } catch (error) {
-    return res.status(500).json({
-      status: 500,
-      error: error.message,
-      message: catchErr("google_login", "auth"),
     });
   }
 });

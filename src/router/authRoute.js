@@ -1,16 +1,17 @@
 import { Router } from "express";
+import { authMiddleware, formData } from "../middleware/index.js";
 import {
-  formData,
-  handleValidationErrors,
   validateLogin,
   validateRegister,
-} from "../middleware/index.js";
+  handleValidationErrors,
+} from "../middleware/validator.js";
 import {
   login,
   register,
-  google_login,
   getAllUser,
+  google_login,
 } from "../controller/authController.js";
+import Passport from "passport";
 
 const authRouter = Router();
 
@@ -29,7 +30,11 @@ authRouter.post(
   register
 );
 
-authRouter.post("/google-login", formData, google_login);
-authRouter.get("/get-all-user", getAllUser);
+authRouter.get(
+  "/google-login",
+  Passport.authenticate("google", { scope: ["email"] }),
+  google_login
+);
+authRouter.get("/get-all-user", authMiddleware, getAllUser);
 
 export default authRouter;

@@ -1,2 +1,4 @@
 import authRouter from "./authRoute.js";
-export { authRouter };
+import fileRoute from "./fileRoute.js";
+
+export { authRouter, fileRoute };

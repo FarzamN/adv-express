@@ -6,9 +6,9 @@ import passport from "passport";
 import { config } from "dotenv";
 import { fileURLToPath } from "url";
 import session from "express-session";
-import { authRouter } from "./src/router/index.js";
 import express, { json, urlencoded } from "express";
 import { DBConnection } from "./src/middleware/index.js";
+import { authRouter, fileRoute } from "./src/router/index.js";
 
 config();
 DBConnection();
@@ -28,6 +28,7 @@ app.use(urlencoded({ extended: false }));
 app.use(BP.json({ type: "application/*+json" }));
 
 const port = process.env.PORT || 3000;
+app.use(passport.initialize());
 
 app.use(
   session({
@@ -38,8 +39,8 @@ app.use(
   passport.session(),
   passport.initialize()
 );
-
-app.use("/auth", authRouter);
+app.use("/api/files", fileRoute);
+app.use("/api/auth", authRouter);
 // Serve the HTML file
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

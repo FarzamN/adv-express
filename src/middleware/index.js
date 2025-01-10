@@ -3,7 +3,6 @@ import multer from "multer";
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import { connect, plugin } from "mongoose";
-import { body, validationResult } from "express-validator";
 import { compareSync, genSalt, hash } from "bcrypt";
 
 config();
@@ -35,47 +34,14 @@ export const catchErr = (data, a) => {
 
 export const formData = multer().none();
 
-// Validation middleware for the register route
-export const validateRegister = [
-  body("name")
-    .notEmpty()
-    .withMessage("Name is required")
-    .isLength({ min: 3 })
-    .withMessage("Name must be at least 3 characters long"),
-  body("email")
-    .notEmpty()
-    .withMessage("Email is required")
-    .isEmail()
-    .withMessage("Invalid email format"),
-  body("password")
-    .notEmpty()
-    .withMessage("Password is required")
-    .isLength({ min: 6 })
-    .withMessage("Password must be at least 6 characters long"),
-];
-
-export const handleValidationErrors = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ status: 400, errors: errors.array() });
-  }
-  next();
-};
-
-export const validateLogin = [
-  body("email")
-    .notEmpty()
-    .withMessage("Email is required")
-    .isEmail()
-    .withMessage("Invalid email format"),
-  body("password").notEmpty().withMessage("Password is required"),
-];
-
 export const authMiddleware = (req, res, next) => {
-  const token = req.header("Authorization");
+  const header = req.header("Authorization");
+  const token = header && header.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "No token, authorization denied" });
+    return res
+      .status(401)
+      .json({ status: 401, message: "No token, authorization denied" });
   }
 
   try {
@@ -83,7 +49,7 @@ export const authMiddleware = (req, res, next) => {
     req.user = decoded.id;
     next();
   } catch (error) {
-    res.status(401).json({ message: "Invalid token" });
+    res.status(401).json({ status: 401, message: "Invalid token" });
   }
 };
 
