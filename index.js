@@ -1,14 +1,13 @@
 import cors from "cors";
-import { join } from "path";
+import { join, dirname } from "path";
 import BP from "body-parser";
-import { dirname } from "path";
 import passport from "passport";
 import { config } from "dotenv";
 import { fileURLToPath } from "url";
 import session from "express-session";
 import express, { json, urlencoded } from "express";
 import { DBConnection } from "./src/middleware/index.js";
-import { authRouter, fileRoute } from "./src/router/index.js";
+import { authRouter, fileRoute, mongoRoute } from "./src/router/index.js";
 
 config();
 DBConnection();
@@ -41,6 +40,7 @@ app.use(
 );
 app.use("/api/files", fileRoute);
 app.use("/api/auth", authRouter);
+app.use("/api/learnMongo", mongoRoute);
 // Serve the HTML file
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

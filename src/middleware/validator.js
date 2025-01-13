@@ -47,3 +47,8 @@ export const validateFile = [
     .withMessage("No file uploaded"),
   body("name").notEmpty().withMessage("name is required"),
 ];
+
+export const validateLearn = [
+  body("title").notEmpty().withMessage("Title is required"),
+  body("description").notEmpty().withMessage("Description is required"),
+];

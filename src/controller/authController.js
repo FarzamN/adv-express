@@ -8,7 +8,6 @@ import {
 } from "../middleware/index.js";
 import { Strategy as google } from "passport-google-oauth2";
 import passport from "passport";
-import { dirname } from "path";
 
 const clientID =
   "1032121719365-0iuvmoiivmr4sg6qbt560m1hqa62lfg7.apps.googleusercontent.com";
