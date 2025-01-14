@@ -114,7 +114,7 @@ export const checkEmailnPhone = asyncHandler(async (req, res) => {
     }
     return res.status(200).json({
       status: 200,
-      otp: randomInt(100000, 999999),
+      otp: randomInt(1000, 9999),
       message: "User does not exist",
     });
   } catch (error) {
