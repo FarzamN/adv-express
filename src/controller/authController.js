@@ -9,6 +9,7 @@ import {
 import { Strategy as google } from "passport-google-oauth2";
 import passport from "passport";
 import { randomInt } from "crypto";
+import jwt from "jsonwebtoken";
 
 const clientID =
   "1032121719365-0iuvmoiivmr4sg6qbt560m1hqa62lfg7.apps.googleusercontent.com";
@@ -42,16 +43,12 @@ export const login = asyncHandler(async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(400)
-        .json({ status: 400, message: "Invalid credentials" });
+      res.status(400).json({ status: 400, message: "Invalid credentials" });
     }
 
     const isMatch = comparePassword(password, user.password);
     if (!isMatch) {
-      return res
-        .status(400)
-        .json({ status: 400, message: "Invalid credentials" });
+      res.status(400).json({ status: 400, message: "Invalid credentials" });
     }
 
     const token = genToken(user.id);
@@ -59,7 +56,7 @@ export const login = asyncHandler(async (req, res) => {
       .status(200)
       .json({ status: 200, token, data: user, message: "Login successful" });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       status: 500,
       error: error.message,
       message: catchErr("login", "auth"),
@@ -71,30 +68,36 @@ export const register = asyncHandler(async (req, res) => {
   const { name, email, password, phone } = req.body;
 
   try {
-    const userExist = await User.findOne({ $or: [{ email }, { phone }] });
+    const emailExist = await User.findOne({ email });
+    const phoneExist = await User.findOne({ phone });
 
-    if (userExist) {
-      return res
-        .status(400)
-        .json({ status: 400, message: "User already exists" });
+    if (!emailExist || !phoneExist) {
+      res.status(400).json({
+        status: 400,
+        message: `${emailExist ? "email" : "phone"} already exists`,
+      });
     }
 
     const hashed = await hashingPassword(password);
+
+    // Create the user first
+    const user = await User.create({ name, email, password: hashed, phone });
+
+    // Generate the token after the user is created
     const payload = { id: user._id };
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    const user = await User.create({ name, email, password: hashed, phone });
     if (user) {
-      return res.status(201).json({
+      res.status(201).json({
         token,
         data: user,
         status: 200,
       });
     }
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       status: 500,
       error: error.message,
       message: catchErr("register", "auth"),
@@ -108,18 +111,18 @@ export const checkEmailnPhone = asyncHandler(async (req, res) => {
   try {
     const user = await User.findOne({ $or: [{ email }, { phone }] });
     if (user) {
-      return res.status(401).json({
+      res.status(401).json({
         status: 401,
         message: "User already exists",
       });
     }
-    return res.status(200).json({
+    res.status(200).json({
       status: 200,
       otp: randomInt(1000, 9999),
       message: "User does not exist",
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       status: 500,
       error: error.message,
       message: catchErr("checkEmailnPhone", "auth"),
@@ -130,9 +133,9 @@ export const checkEmailnPhone = asyncHandler(async (req, res) => {
 export const getAllUser = asyncHandler(async (req, res) => {
   try {
     const users = await User.find();
-    return res.status(200).json({ status: 200, data: users });
+    res.status(200).json({ status: 200, data: users });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       status: 500,
       error: error.message,
       message: catchErr("getAllUser", "auth"),
