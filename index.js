@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 import session from "express-session";
 import express, { json, urlencoded } from "express";
 import { DBConnection } from "./src/middleware/index.js";
-import { authRouter, fileRoute, mongoRoute } from "./src/router/index.js";
+import { authRouter, fileRoute, productRoute } from "./src/router/index.js";
 
 config();
 DBConnection();
@@ -40,7 +40,7 @@ app.use(
 );
 app.use("/api/files", fileRoute);
 app.use("/api/auth", authRouter);
-app.use("/api/learnMongo", mongoRoute);
+app.use("/api/products", productRoute);
 // Serve the HTML file
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

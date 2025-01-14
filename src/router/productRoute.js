@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { createLearn } from "../controller/learnController.js";
+import {
+  commentOfProduct,
+  createProduct,
+  searchProduct,
+} from "../controller/productController.js";
 import { authMiddleware, formData } from "../middleware/index.js";
 import {
   validateLearn,
@@ -14,7 +18,10 @@ mongoRoute.post(
   formData,
   validateLearn,
   handleValidationErrors,
-  createLearn
+  createProduct
 );
+
+mongoRoute.get("/search", authMiddleware, searchProduct);
+mongoRoute.post("/comments", authMiddleware, formData, commentOfProduct);
 
 export default mongoRoute;

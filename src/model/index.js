@@ -1,5 +1,5 @@
 import User from "./authModel.js";
 import fileModel from "./fileModel.js";
-import Mongo from "./learnMongoModel.js";
+import product from "./productModel.js";
 
-export { User, fileModel, Mongo };
+export { User, fileModel, product };

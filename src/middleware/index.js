@@ -7,15 +7,15 @@ import { compareSync, genSalt, hash } from "bcrypt";
 
 config();
 
-plugin((schema) => {
-  schema.set("toJSON", {
-    transform: (doc, ret) => {
-      ret.id = ret._id;
-      delete ret._id;
-      delete ret.__v;
-    },
-  });
-});
+// plugin((schema) => {
+//   schema.set("toJSON", {
+//     transform: (doc, ret) => {
+//       ret.id = ret._id;
+//       delete ret._id;
+//       delete ret.__v;
+//     },
+//   });
+// });
 
 export const DBConnection = async () => {
   try {

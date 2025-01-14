@@ -45,6 +45,7 @@
     "passport": "^0.7.0",
     "passport-google-oauth2": "^0.2.0",
     "path": "^0.12.7",
-    "slug": "^9.1.0"
+    "slug": "^9.1.0",
+    "ws": "^8.18.0"
   }
 }

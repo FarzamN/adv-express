@@ -1,5 +1,5 @@
 import authRouter from "./authRoute.js";
 import fileRoute from "./fileRoute.js";
-import mongoRoute from "./learnMongoRoute.js";
+import productRoute from "./productRoute.js";
 
-export { authRouter, fileRoute, mongoRoute };
+export { authRouter, fileRoute, productRoute };
