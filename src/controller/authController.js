@@ -107,8 +107,8 @@ export const checkEmailnPhone = asyncHandler(async (req, res) => {
   try {
     const user = await User.findOne({ $or: [{ email }, { phone }] });
     if (user) {
-      return res.status(200).json({
-        status: 200,
+      return res.status(401).json({
+        status: 401,
         message: "User already exists",
       });
     }
@@ -125,6 +125,7 @@ export const checkEmailnPhone = asyncHandler(async (req, res) => {
     });
   }
 });
+
 export const getAllUser = asyncHandler(async (req, res) => {
   try {
     const users = await User.find();
