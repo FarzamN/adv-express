@@ -68,10 +68,11 @@ export const login = asyncHandler(async (req, res) => {
 });
 
 export const register = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, phone } = req.body;
 
   try {
-    const userExist = await User.findOne({ email });
+    const userExist = await User.findOne({ $or: [{ email }, { phone }] });
+
     if (userExist) {
       return res
         .status(400)
@@ -79,15 +80,15 @@ export const register = asyncHandler(async (req, res) => {
     }
 
     const hashed = await hashingPassword(password);
-    // const payload = { id: user._id };
-    // const token = jwt.sign(payload, process.env.JWT_SECRET, {
-    // expiresIn: "1h",
-    // });
+    const payload = { id: user._id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
-    const user = await User.create({ name, email, password: hashed });
+    const user = await User.create({ name, email, password: hashed, phone });
     if (user) {
       return res.status(201).json({
-        // token,
+        token,
         data: user,
         status: 200,
       });
