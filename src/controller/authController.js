@@ -8,6 +8,7 @@ import {
 } from "../middleware/index.js";
 import { Strategy as google } from "passport-google-oauth2";
 import passport from "passport";
+import { randomInt } from "crypto";
 
 const clientID =
   "1032121719365-0iuvmoiivmr4sg6qbt560m1hqa62lfg7.apps.googleusercontent.com";
@@ -98,6 +99,30 @@ export const register = asyncHandler(async (req, res) => {
   }
 });
 
+export const checkEmailnPhone = asyncHandler(async (req, res) => {
+  const { email, phone } = req.body;
+
+  try {
+    const user = await User.findOne({ $or: [{ email }, { phone }] });
+    if (user) {
+      return res.status(200).json({
+        status: 200,
+        message: "User already exists",
+      });
+    }
+    return res.status(200).json({
+      status: 200,
+      otp: randomInt(100000, 999999),
+      message: "User does not exist",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      error: error.message,
+      message: catchErr("checkEmailnPhone", "auth"),
+    });
+  }
+});
 export const getAllUser = asyncHandler(async (req, res) => {
   try {
     const users = await User.find();

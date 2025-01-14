@@ -4,12 +4,14 @@ import {
   validateLogin,
   validateRegister,
   handleValidationErrors,
+  validateEmailnPhone,
 } from "../middleware/validator.js";
 import {
   login,
   register,
   getAllUser,
   google_login,
+  checkEmailnPhone,
 } from "../controller/authController.js";
 import Passport from "passport";
 
@@ -28,6 +30,14 @@ authRouter.post(
   validateRegister,
   handleValidationErrors,
   register
+);
+
+authRouter.post(
+  "/checkEmailnPhone",
+  formData,
+  validateEmailnPhone,
+  handleValidationErrors,
+  checkEmailnPhone
 );
 
 authRouter.get(
