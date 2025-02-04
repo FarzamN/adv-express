@@ -28,9 +28,8 @@ export const DBConnection = async () => {
   }
 };
 
-export const catchErr = (data, a) => {
-  return `Internal server error in ${data} API, ${a} controller`;
-};
+export const catchErr = (data, a) =>
+  `Internal server error in ${data} API, ${a} controller`;
 
 export const formData = multer().none();
 

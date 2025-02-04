@@ -109,13 +109,16 @@ export const checkEmailnPhone = asyncHandler(async (req, res) => {
   const { email, phone } = req.body;
 
   try {
-    const user = await User.findOne({ $or: [{ email }, { phone }] });
-    if (user) {
+    const emailExist = await User.findOne({ email });
+    const phoneExist = await User.findOne({ phone });
+
+    if (!emailExist || !phoneExist) {
       res.status(401).json({
         status: 401,
-        message: "User already exists",
+        message: `${emailExist ? "email" : "phone"} already exists`,
       });
     }
+
     res.status(200).json({
       status: 200,
       otp: randomInt(1000, 9999),

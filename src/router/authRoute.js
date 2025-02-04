@@ -24,6 +24,7 @@ authRouter.post(
   handleValidationErrors,
   login
 );
+
 authRouter.post(
   "/register",
   formData,
@@ -33,18 +34,27 @@ authRouter.post(
 );
 
 authRouter.post(
-  "/checkEmailnPhone",
+  "/check-email-Phone",
   formData,
   validateEmailnPhone,
   handleValidationErrors,
   checkEmailnPhone
 );
 
+// authRouter.post(
+//   "/forget-with-",
+//   formData,
+//   validateEmailnPhone,
+//   handleValidationErrors,
+//   forgetPaw
+// );
+
 authRouter.get(
   "/google-login",
   Passport.authenticate("google", { scope: ["email"] }),
   google_login
 );
+
 authRouter.get("/get-all-user", authMiddleware, getAllUser);
 
 export default authRouter;
