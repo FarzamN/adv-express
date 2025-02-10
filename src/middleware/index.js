@@ -2,6 +2,7 @@ import chalk from "chalk";
 import multer from "multer";
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
+import session from "express-session";
 import { connect, plugin } from "mongoose";
 import { compareSync, genSalt, hash } from "bcrypt";
 
@@ -16,6 +17,18 @@ config();
 //     },
 //   });
 // });
+
+export const coreConfig = {
+  origin: "*",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+};
+
+export const sessionConfig = session({
+  resave: false,
+  saveUninitialized: true,
+  secret: process.env.SECRET_KEY,
+});
 
 export const DBConnection = async () => {
   try {

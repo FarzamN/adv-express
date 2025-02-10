@@ -9,17 +9,16 @@ import session from "express-session";
 import express, { json, urlencoded } from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { DBConnection } from "./src/middleware/index.js";
+import {
+  coreConfig,
+  DBConnection,
+  sessionConfig,
+} from "./src/middleware/index.js";
 import { authRouter, fileRoute, productRoute } from "./src/router/index.js";
+import { socketHandler } from "./src/socket/socketHandler.js";
 
 config();
 DBConnection();
-
-const coreConfig = {
-  origin: "*",
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-};
 
 const app = express();
 const server = createServer(app); // Create HTTP server
@@ -37,16 +36,7 @@ app.use(BP.json({ type: "application/*+json" }));
 const port = process.env.PORT || 3000;
 app.use(passport.initialize());
 
-app.use(
-  session({
-    resave: false,
-    saveUninitialized: true,
-    secret: process.env.SECRET_KEY,
-  }),
-  passport.session(),
-  passport.initialize()
-);
-
+app.use(sessionConfig);
 app.use("/api/files", fileRoute);
 app.use("/api/auth", authRouter);
 app.use("/api/products", productRoute);
@@ -59,19 +49,7 @@ app.get("/", (req, res) => {
 });
 
 // **Socket.IO Connection Logic**
-io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
-
-  // Listen for messages
-  socket.on("sendMessage", (message) => {
-    console.log("Message received:", message);
-    io.emit("receiveMessage", message); // Broadcast message to all clients
-  });
-
-  socket.on("disconnect", () => {
-    console.log("A user disconnected:", socket.id);
-  });
-});
+socketHandler(io);
 
 // Start Server
 server.listen(port, () => {
