@@ -77,7 +77,7 @@ export const register = asyncHandler(async (req, res) => {
     const emailExist = await User.findOne({ email });
     const phoneExist = await User.findOne({ phone });
 
-    if (!emailExist || !phoneExist) {
+    if (emailExist || phoneExist) {
       return res.status(400).json({
         status: 400,
         message: `${emailExist ? "email" : "phone"} already exists`,
@@ -117,7 +117,6 @@ export const checkEmailnPhone = asyncHandler(async (req, res) => {
   try {
     const emailExist = await User.findOne({ email });
     const phoneExist = await User.findOne({ phone });
-    console.log(!phoneExist);
 
     if (emailExist || phoneExist) {
       return res.status(400).json({
