@@ -29,6 +29,19 @@ export const validateEmailnPhone = [
   body("phone").notEmpty().withMessage("Phone is required"),
 ];
 
+export const validateEmail = [
+  body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email format"),
+];export const validatePhone = [
+  body("phone").notEmpty().withMessage("Phone is required"),
+ 
+];
+
+
+
 export const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

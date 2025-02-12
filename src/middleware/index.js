@@ -2,6 +2,7 @@ import chalk from "chalk";
 import multer from "multer";
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
+import { randomInt } from "crypto";
 import session from "express-session";
 import { connect, plugin } from "mongoose";
 import { compareSync, genSalt, hash } from "bcrypt";
@@ -81,3 +82,5 @@ export const genToken = (id) => {
   });
   return token;
 };
+
+export const otp =  randomInt(1000, 9999)
