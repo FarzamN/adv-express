@@ -117,16 +117,17 @@ export const checkEmailnPhone = asyncHandler(async (req, res) => {
   try {
     const emailExist = await User.findOne({ email });
     const phoneExist = await User.findOne({ phone });
+    console.log(!phoneExist);
 
-    if (!emailExist || !phoneExist) {
-      return res.status(401).json({
-        status: 401,
+    if (emailExist || phoneExist) {
+      return res.status(400).json({
+        status: 400,
         message: `${emailExist ? "email" : "phone"} already exists`,
       });
     }
 
     return res.status(200).json({
-      otp,
+       otp,
       status: 200,
       message: "User does not exist",
     });
